@@ -9,23 +9,28 @@ class TestCase {
     this.setUp();
     const method = this[this.name].bind(this);
     method();
+    this.tearDown();
   }
+
+  tearDown() { }
 }
 
 class WasRun extends TestCase {
   constructor(name) {
     super(name);
-    this.wasSetUp = false;
     // this.wasRun;
   }
 
   setUp() {
-    this.wasSetUp = true;
-    this.wasRun = false;
+    this.log = 'setUp ';
   }
 
   testMethod() {
-    this.wasRun = true;
+    this.log = this.log + 'testMethod ';
+  }
+
+  tearDown() {
+    this.log = this.log + 'tearDown ';
   }
 }
 
@@ -34,18 +39,11 @@ class TestCaseTest extends TestCase {
     super(name)
   }
 
-  testSetUp() {
+  testTemplateMethod() {
     const test = new WasRun('testMethod');
     test.run();
-    console.assert(test.wasSetUp);
-  }
-
-  testRunning() {
-    const test = new WasRun('testMethod');
-    test.run();
-    console.assert(test.wasRun);
+    console.assert('setUp testMethod tearDown ' === test.log);
   }
 }
 
-new TestCaseTest('testSetUp').run();
-new TestCaseTest('testRunning').run();
+new TestCaseTest('testTemplateMethod').run();
